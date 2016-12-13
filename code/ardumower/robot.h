@@ -579,6 +579,38 @@ protected:
     virtual String waitStringConsole();
 };    
 
+// --------------------- Mähzonen -----------------------------
+
+struct Point
+{
+    float X;
+    float Y;
+};
+
+typedef struct Point Point;
+
+
+unsigned long Peri_Track_P1;
+    unsigned long Peri_Track_P2;
+    unsigned long Peri_Track_P3;
+    unsigned long Peri_Track_P4;
+    unsigned long Peri_Track_P5;
+    unsigned long Peri_Track_P6;
+    unsigned long Peri_Track_P7;
+
+    int Peri_find_Point;
+    int Peri_found_Point;
+    unsigned long find_Point_EndTime;
+
+    float lon_mid;
+    float lat_mid;
+
+    int Area_Soll;
+    int Area_Ist;
+
+    int Out_of_Area_Timer;
+
+// --------------------- Mähzonen -----------------------------
 
 
 #endif
