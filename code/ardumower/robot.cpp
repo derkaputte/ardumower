@@ -2935,6 +2935,9 @@ void Robot::loop()  {
       break;
     case STATE_MANUAL:
       break;
+		  
+// ------------------ Mähzonen ---------------------
+		  
     case STATE_FORWARD:
       // driving forward            
       if (mowPatternCurr == MOW_BIDIR){
@@ -2952,8 +2955,26 @@ void Robot::loop()  {
       checkSonar();             
       checkPerimeterBoundary(); 
       checkLawn();      
-      checkTimeout();      
+      checkTimeout();     
+
+// ---------------------------------------------------------------------------------------------------------------------------------------------------------
+//     Wenn Schaf eine Zeit lang in einem anderen Bereich mäht.. dann wieder zurück fahren in richtigen Bereich  
+//----------------------------------------------------------------------------------------------------------------------------------------------------------
+
+      if (((Area_Soll == 1) && (Area_Ist ==2)) or ((Area_Soll == 3) && (Area_Ist ==5)))
+         if ((millis() - Out_of_Area_Timer) > 180000)
+            {
+              setNextState(STATE_STATION_FORW,0);   
+              Peri_found_Point = 0;   
+              Peri_find_Point = 1;   
+              find_Point_EndTime = millis() + Peri_Track_P1;     
+              Out_of_Area_Timer = millis();
+            }  
+
+       
       break;
+// ------------------ Mähzonen --------------------
+	  
     case STATE_ROLL:
       checkCurrent();            
       checkBumpers();
