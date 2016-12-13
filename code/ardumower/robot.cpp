@@ -2690,6 +2690,28 @@ void Robot::checkIfStuck(){
 }
   }
 
+// ------------------------ Mähzonen -------------------------------------
+
+//----------------------------------------------------------------------------------------------------------------------------
+// Abstand von Robby zu einem definierten Punkt
+//----------------------------------------------------------------------------------------------------------------------------
+
+bool Abstand(Point p, Point r) {     //  int x1, int y1, int x2, int y2) {
+  float distx;
+  float disty;
+  float l;
+  if (p.X>=r.X)  distx= p.X-r.X;
+  else  distx= r.X-p.X;
+  if (p.Y>=r.Y)  disty= p.Y-r.Y;
+  else  disty= r.Y-p.Y;
+  l =(sqrt((float)(distx*distx)+(float)(disty*disty)));
+  Console.println("Abstand: ");
+  printDouble(l,6);
+  return l <= 0.000030;
+}
+
+// ------------------------ Mähzonen -------------------------------------
+
 
 void Robot::processGPSData()
 {
