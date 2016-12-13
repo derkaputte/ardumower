@@ -569,12 +569,27 @@ void RemoteControl::processRainMenu(String pfodCmd){
 }
 
 void RemoteControl::sendGPSMenu(boolean update){
-  if (update) serialPort->print("{:"); else serialPort->print(F("{.GPS`1000"));
-  serialPort->print(F("|q00~Use "));
+  
+  float lat, lon;
+  unsigned long age;
+  robot->gps.f_get_position(&lat, &lon, &age); 
+  
+  if (update) Bluetooth.print("{:"); else Bluetooth.print(F("{.GPS`1000"));         
+  Bluetooth.print(F("|q00~Use "));
   sendYesNo(robot->gpsUse);
-  sendSlider("q01", F("Stuck if GPS speed is below"), robot->stuckIfGpsSpeedBelow, "", 0.1, 3); 
+  sendSlider("q01", F("Stucked if GPS speed is below"), robot->stuckIfGpsSpeedBelow, "", 0.1, 3); 
   sendSlider("q02", F("GPS speed ignore time"), robot->gpsSpeedIgnoreTime, "", 1, 10000, robot->motorReverseTime);       
-  serialPort->println("}");
+    
+
+
+
+    serialPort->print(F("|zz~LAT : "));
+    printDouble(lat,6);
+    serialPort->print(F("|zz~LON : "));
+    printDouble(lon,6);
+    serialPort->print(F("|zz~AREA IST : "));
+    serialPort->print(robot->Area_Ist);
+    Bluetooth.println("}"); 
 }
 
 void RemoteControl::processGPSMenu(String pfodCmd){      
@@ -757,6 +772,8 @@ void RemoteControl::processDateTimeMenu(String pfodCmd){
   robot->setActuator(ACT_RTC, 0);            
 }
 
+// ---------------- Mähzonen ---------------------
+
 void RemoteControl::sendTimerDetailMenu(int timerIdx, boolean update){
   if (update) serialPort->print("{:"); else serialPort->print(F("{.Details"));
   serialPort->print("|p0");
@@ -770,7 +787,7 @@ void RemoteControl::sendTimerDetailMenu(int timerIdx, boolean update){
   sendSlider("p2"+sidx, F("Start minute "), robot->timer[timerIdx].startTime.minute, "", 1, 59, 0);         
   sendSlider("p3"+sidx, F("Stop hour "), robot->timer[timerIdx].stopTime.hour, "", 1, 23, 0);       
   sendSlider("p4"+sidx, F("Stop minute "), robot->timer[timerIdx].stopTime.minute, "", 1, 59, 0);             
-  for (int i=0; i < 7; i++){
+    for (int i=0; i < 7; i++){
     serialPort->print("|p5");
     serialPort->print(timerIdx);
     serialPort->print(i);
@@ -782,6 +799,8 @@ void RemoteControl::sendTimerDetailMenu(int timerIdx, boolean update){
   serialPort->print("|p9");
   serialPort->print(timerIdx);
   serialPort->print(F("~Set to current time"));
+  sendSlider("p8"+sidx, F("Area "), robot->timer[timerIdx].Area_Timer, "", 1, 5, 0);             
+  
   serialPort->println("}");
 }
 
@@ -796,6 +815,7 @@ void RemoteControl::processTimerDetailMenu(String pfodCmd){
     else if (pfodCmd.startsWith("p2")) { processSlider(pfodCmd, robot->timer[timerIdx].startTime.minute, 1); checkStop = true; }
     else if (pfodCmd.startsWith("p3")) { processSlider(pfodCmd, robot->timer[timerIdx].stopTime.hour, 1); checkStart = true; }      
     else if (pfodCmd.startsWith("p4")) { processSlider(pfodCmd, robot->timer[timerIdx].stopTime.minute, 1); checkStart = true; }        
+    else if (pfodCmd.startsWith("p8")) { processSlider(pfodCmd, robot->timer[timerIdx].Area_Timer, 1);checkStart = false; }        
     else if (pfodCmd.startsWith("p9")) {       
       robot->timer[timerIdx].startTime = robot->datetime.time; checkStop = true;      
       robot->timer[timerIdx].daysOfWeek = (1 << robot->datetime.date.dayOfWeek);      
@@ -827,6 +847,10 @@ void RemoteControl::processTimerDetailMenu(String pfodCmd){
     }
   sendTimerDetailMenu(timerIdx, true);  
 }
+
+// ----------------- Mähzonen ------------------------
+
+
 
 void RemoteControl::sendTimerMenu(boolean update){
   if (update) serialPort->print("{:"); else serialPort->print(F("{.Timer"));
