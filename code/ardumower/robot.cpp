@@ -2710,8 +2710,6 @@ bool Abstand(Point p, Point r) {     //  int x1, int y1, int x2, int y2) {
   return l <= 0.000030;
 }
 
-// ------------------------ Mähzonen -------------------------------------
-
 
 void Robot::processGPSData()
 {
@@ -2719,6 +2717,9 @@ void Robot::processGPSData()
   nextTimeGPS = millis() + 1000;
   float nlat, nlon;
   unsigned long age;
+
+  Point P1,P2,P3,P4, P_ROBI;
+  
   gps.f_get_position(&nlat, &nlon, &age);
   if (nlat == GPS::GPS_INVALID_F_ANGLE ) return;
   if (gpsLon == 0){
@@ -2728,7 +2729,65 @@ void Robot::processGPSData()
   }
   gpsX = (float)gps.distance_between(nlat,  gpsLon,  gpsLat, gpsLon);
   gpsY = (float)gps.distance_between(gpsLat, nlon,   gpsLat, gpsLon);
+
+  P_ROBI.X = nlon;
+  P_ROBI.Y = nlat;
+
+
+
+
+ // Console.println("ROBBY: ");
+ // printDouble(P_ROBI.X,6);
+ //  printDouble(P_ROBI.Y,6);
+
+
+  //----------------   Area 1  --------------------------------------------------------
+
+  P1.X = xx.671150; P1.Y= xx.102400;
+  if (Abstand(P1, P_ROBI)) Area_Ist = 1;
+
+  P1.X = xx.671170; P1.Y= xx.102370;
+  if (Abstand(P1, P_ROBI)) Area_Ist = 1;
+  
+  //----------------   Area 2  --------------------------------------------------------
+
+  P1.X = xx.671040; P1.Y= xx.102440;
+  if (Abstand(P1, P_ROBI)) Area_Ist = 2;
+
+  P1.X = xx.671030; P1.Y= xx.102370;
+  if (Abstand(P1, P_ROBI)) Area_Ist = 2;
+
+  //----------------   Area 3  --------------------------------------------------------
+
+  P1.X = xx.671280; P1.Y= xx.102480;
+  if (Abstand(P1, P_ROBI)) Area_Ist = 3;
+
+  P1.X = xx.671260; P1.Y= xx.102470;
+  if (Abstand(P1, P_ROBI)) Area_Ist = 3;
+
+  //----------------   Area 4  --------------------------------------------------------
+  
+  P1.X = xx.671270; P1.Y= xx.102630;
+  if (Abstand(P1, P_ROBI)) Area_Ist = 4;
+
+  //----------------   Area 5  --------------------------------------------------------
+  
+    P1.X = xx.671170; P1.Y= xx.102620;
+  if (Abstand(P1, P_ROBI)) Area_Ist = 5;
+
+      P1.X = xx.671090; P1.Y= xx.102590;
+  if (Abstand(P1, P_ROBI)) Area_Ist = 5;
+
+ 
+  if (Area_Ist == Area_Soll) Out_of_Area_Timer = millis();
+
+  if ((Area_Soll == 0)& (Area_Ist > 0))  Area_Soll = Area_Ist;    // Wenn Schaf in einer Area gestartet wird dann mäht  er auch in dieser Area
+     
 }
+
+
+// ------------------------ Mähzonen -------------------------------------
+
 
 // calculate map position by odometry sensors
 void Robot::calcOdometry(){
