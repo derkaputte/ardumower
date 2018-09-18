@@ -15,10 +15,10 @@ int speed = MAX_SPEED;
 #define pinMotorEnable  37         // EN motors enable
 //#define pinMotorLeftPWM 5           // M1_IN1 left motor PWM pin
 //#define pinMotorLeftDir 6          // M1_IN2 left motor Dir pin
-#define pinMotorLeftPWM 3           // M1_IN1 left motor PWM pin
-#define pinMotorLeftDir 33          // M1_IN2 left motor Dir pin
-#define pinMotorLeftSense A1       // M1_FB  left motor current sense
-#define pinMotorLeftFault 25       // M1_SF  left motor fault
+#define pinMotorLeftPWM 3           // M2_IN1 left motor PWM pin
+#define pinMotorLeftDir 33          // M2_IN2 left motor Dir pin
+#define pinMotorLeftSense A0       // M2_FB  left motor current sense
+#define pinMotorLeftFault 27       // M2_SF  left motor fault
 
 float motorLeftPWM = 0;
 float motorRightPWM = 0;
